@@ -48,7 +48,6 @@ Metadata:
         ParameterValues:
           # Should this be set here?
           NumberofAuroraReplicas: '2'
-          DBName: Auto
           DBPort: 3306
           StorageEncrypted: 'true'
           BackupRetentionPeriod: 35
@@ -69,7 +68,6 @@ Metadata:
         ParameterValues:
           NumberofAuroraReplicas: '1'
           AvailabilityZones: Auto
-          DBName: Auto
           DBPort: 3306
           StorageEncrypted: 'true'
           BackupRetentionPeriod: 1
