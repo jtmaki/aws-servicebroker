@@ -231,12 +231,13 @@ These are the environment variables that are available to an application on bind
 
 Name           | Description
 -------------- | ---------------
+ADMIN_IAM_USER|
+APP_IAM_USER|
 CLUSTER_ENDPOINT|
-READER_ENDPOINT|
-DB_USERNAME|
-DBIAM_USER|
-PORT|
 DB_NAME|
+DB_USERNAME|
+PORT|
+READER_ENDPOINT|
 
 <a id="kubernetes-openshift-examples" />
 

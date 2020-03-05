@@ -907,11 +907,31 @@ Resources:
     Type: AWS::IAM::ManagedPolicy
     Condition: IamEnabled
     Properties:
-      ManagedPolicyName: !Join [ "-", [ DB_User, !Ref ArchPathTag, !Ref AuroraDBPrimaryInstance ] ]
+      ManagedPolicyName: !Join [ "-", [ Admin_User, !Ref ArchPathTag, !Ref AuroraDBPrimaryInstance ] ]
       Description: Managed Policy for access to service broker created Aurora MySQL database
       Path: /
       Roles:
         - !Ref FederatedRole
+      PolicyDocument:
+          Version: 2012-10-17
+          Statement:
+          - Effect: Allow
+            Action:
+              - rds-db:connect
+            Resource:
+              - !GetAtt AWSSBInjectedAddDbUsers.AdminUser
+            Condition:
+              StringLike:
+                aws:userid: !GetAtt AWSSBInjectedAddDbUsers.IamUsers
+
+  DBApplicationPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Condition: IamEnabled
+    Properties:
+      ManagedPolicyName: !Join [ "-", [ App_User, !Ref ArchPathTag, !Ref AuroraDBPrimaryInstance ] ]
+      Description: Managed Policy for access to service broker created Aurora MySQL database
+      Path: /
+      Roles:
         - !Ref ServiceRole
       PolicyDocument:
           Version: 2012-10-17
@@ -920,10 +940,7 @@ Resources:
             Action:
               - rds-db:connect
             Resource:
-              - !GetAtt AWSSBInjectedAddDbUsers.User
-            Condition:
-              StringLike:
-                aws:userid: !GetAtt AWSSBInjectedAddDbUsers.IamUsers
+              - !GetAtt AWSSBInjectedAddDbUsers.ApplicationUser
 
   DBSubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
@@ -1613,9 +1630,15 @@ Outputs:
       - AutoDBName
       - !GetAtt AWSSBInjectedGenerateDBName.DBName
       - !Ref DBName
-  DBIAMUser:
+  AdminIamUser:
     Value:
       !If
       - IamEnabled
-      - !GetAtt AWSSBInjectedAddDbUsers.User
+      - !GetAtt AWSSBInjectedAddDbUsers.AdminUser
+      - ''
+  AppIamUser:
+    Value:
+      !If
+      - IamEnabled
+      - !GetAtt AWSSBInjectedAddDbUsers.ApplicationUser
       - ''
